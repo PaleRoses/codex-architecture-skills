@@ -12,16 +12,6 @@ This repository is intentionally small. Each top-level skill folder is installab
 | [`structured-registry-designer`](./structured-registry-designer) | Designing registries as lawful indexed structures: total registries, functors, presheaves, sheaves, fibred registries, and enriched registries. |
 | [`fixed-axis-dense-blocks`](./fixed-axis-dense-blocks) | Designing dense numeric storage for small fixed homogeneous axis families behind typed public APIs and hot-loop kernels. |
 
-## What makes these skills different
-
-These are not prompt seasoning. They encode architectural judgment:
-
-- precise trigger descriptions with explicit anti-triggers;
-- short `SKILL.md` entrypoints with progressive disclosure into references;
-- typed construction contracts, quality gates, anti-patterns, and review questions;
-- local `code-examples/` snippets inside each skill folder, not a repo-global source dump;
-- bias toward ADTs, witnesses, total products, typed failures, law tests, and explicit ownership boundaries.
-
 ## Install
 
 Copy the skill folders you want into your agent's skills directory.
