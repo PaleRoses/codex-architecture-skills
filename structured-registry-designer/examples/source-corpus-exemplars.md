@@ -1,13 +1,12 @@
 # Source Corpus Exemplars
 
-These are the local structures that matter for `structured-registry-designer`. They show the registry ladder in actual repo form rather than abstract sermonizing.
+These are the bundled structures that matter for `structured-registry-designer`. The code snippets live in `../code-examples/source-corpus-snippets.md`; the prose below tells you why each snippet matters.
 
 ## 1. `ChannelVec` and descriptor tables: closed universes deserve total registries
 
-Source files:
+Code examples:
 
-- `files/compiler/engine/melusine-algebra/src/Melusine/Algebra/Pure/ChannelVec.hs`
-- `files/compiler/engine/melusine-algebra/src/Melusine/Algebra/Pure/ChannelDescriptor.hs`
+- `../code-examples/source-corpus-snippets.md#closed-descriptor-table-total-registry-over-a-finite-universe`
 
 Structural lesson:
 
@@ -31,10 +30,9 @@ Rejects: partial lookup over a declared finite universe.
 
 ## 2. `ChannelAggregate` and `LawfulChannel`: registry entries may carry algebra, not only data
 
-Source files:
+Code examples:
 
-- `files/compiler/engine/melusine-algebra/src/Melusine/Algebra/Pure/ChannelAggregate.hs`
-- `files/compiler/engine/melusine-algebra/src/Melusine/Algebra/Pure/LawfulChannel.hs`
+- `../code-examples/source-corpus-snippets.md#law-bearing-registry-entries`
 
 Structural lesson:
 
@@ -48,11 +46,10 @@ Rejects: tables that recover a payload but not the operations or laws that make 
 
 ## 3. declared site manifests: local-to-global structure should be declared explicitly
 
-Source files:
+Code examples:
 
-- `files/compiler/engine/melusine-domain/src/Melusine/Domain/Architecture/Manifest.hs`
-- `files/compiler/foundation/moonlight-category/src-core/Moonlight/Category/Pure/Site/Manifest.hs`
-- `files/compiler/foundation/moonlight-category/src-core/Moonlight/Category/Pure/Site/Compile.hs`
+- `../code-examples/source-corpus-snippets.md#declared-site-manifests-local-to-global-structure-is-data`
+- `../code-examples/source-corpus-snippets.md#thin-site-compilation-arrows-become-an-explicit-category`
 
 Structural lesson:
 
@@ -66,12 +63,10 @@ Rejects: distributed registries whose notion of overlap exists only in prose.
 
 ## 4. sheaf and transport layers: arrows must do real work
 
-Source files:
+Code examples:
 
-- `files/compiler/engine/melusine-sheaf/src/Melusine/Sheaf/Site/Stalk.hs`
-- `files/compiler/engine/melusine-sheaf/src/Melusine/Sheaf/Section/Potential.hs`
-- `files/compiler/foundation/moonlight-category/src-core/Moonlight/Category/Pure/GeometricFunctor.hs`
-- `files/compiler/engine/melusine-domain/src/Melusine/Domain/Gluing/ComposeDecorated.hs`
+- `../code-examples/source-corpus-snippets.md#presheaf-like-stalk-and-product-morphism`
+- `../code-examples/source-corpus-snippets.md#transport-and-gluing-surfaces`
 
 Structural lesson:
 

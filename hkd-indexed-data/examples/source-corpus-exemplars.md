@@ -1,13 +1,12 @@
 # Source Corpus Exemplars
 
-These are the local structures that matter for `hkd-indexed-data`. They are nearby canonical grip points, not decorative links.
+These are the bundled structures that matter for `hkd-indexed-data`. The code snippets live in `../code-examples/source-corpus-snippets.md`; the prose below tells you why each snippet matters.
 
 ## 1. `ChannelVec`: closed heterogeneous product by witness
 
-Source files:
+Code examples:
 
-- `files/compiler/engine/melusine-algebra/src/Melusine/Algebra/Pure/ChannelVec.hs`
-- `files/compiler/engine/melusine-algebra/src/Melusine/Algebra/Pure/ChannelDelta.hs`
+- `../code-examples/source-corpus-snippets.md#channelvec-closed-heterogeneous-product-by-witness`
 
 Structural lesson:
 
@@ -33,9 +32,9 @@ Does adding a channel force ChannelState, ChannelDeltaPayload, tabulation, index
 
 ## 2. `CoveringProduct`: abstract dependent product over witnesses
 
-Source file:
+Code example:
 
-- `files/compiler/foundation/moonlight-category/src-core/Moonlight/Category/Pure/CoveringProduct.hs`
+- `../code-examples/source-corpus-snippets.md#coveringproduct-abstract-dependent-product-over-witnesses`
 
 Structural lesson:
 
@@ -59,10 +58,9 @@ Is replacement guarded by witness equality rather than by text labels?
 
 ## 3. `Column f a`: HKD record view selection
 
-Source files:
+Code examples:
 
-- `files/compiler/foundation/moonlight-flow/model/src/Moonlight/Flow/Model/Family.hs`
-- `files/compiler/foundation/moonlight-flow/test-support/test/Moonlight/Flow/Runtime/PublicApiSpec.hs`
+- `../code-examples/source-corpus-snippets.md#column-f-a-hkd-record-view-selection`
 
 Structural lesson:
 
@@ -89,10 +87,10 @@ Which errors are named at the decode boundary?
 
 ## 4. Typed modality registries: dependent keys are the adjacent boundary
 
-Source files:
+Code examples:
 
-- `files/compiler/foundation/moonlight-sheaf/obstruction/src/Moonlight/Sheaf/Obstruction/Cohomological/Modality.hs`
-- `files/compiler/foundation/moonlight-sheaf/obstruction/src/Moonlight/Sheaf/Obstruction/Cohomological/Substrate.hs`
+- `../code-examples/source-corpus-snippets.md#typed-modality-registries-dependent-keys-as-the-adjacent-boundary`
+- `../code-examples/source-corpus-snippets.md#cohomological-substrate-aliases-phase-specific-views-stay-derived`
 
 Structural lesson:
 
@@ -115,9 +113,9 @@ Are missing references and unsupported anchors returned as typed gaps?
 
 ## 5. Cohomological substrate aliases: phase-specific views should stay derived
 
-Source file:
+Code example:
 
-- `files/compiler/foundation/moonlight-sheaf/obstruction/src/Moonlight/Sheaf/Obstruction/Cohomological/Substrate.hs`
+- `../code-examples/source-corpus-snippets.md#cohomological-substrate-aliases-phase-specific-views-stay-derived`
 
 Structural lesson:
 

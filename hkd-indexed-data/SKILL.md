@@ -38,6 +38,7 @@ Read `references/contract.md` for the hard structures.
 Read `references/examples.md` for compact pattern reminders.
 Read `references/quality-gates.md` before approving a design.
 Read `references/anti-patterns.md` when reviewing an existing implementation.
+Read `code-examples/source-corpus-snippets.md` only when the exemplar prose needs concrete Haskell snippets.
 
 ## Example map
 

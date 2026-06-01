@@ -1,12 +1,13 @@
 # Source Corpus Exemplars
 
-These are the local structures that matter for `fixed-axis-dense-blocks`. They are the nearby canonical target shapes in this repository.
+These are the bundled structures that matter for `fixed-axis-dense-blocks`. The code snippets live in `../code-examples/source-corpus-snippets.md`; the prose below tells you why each snippet matters.
 
 ## 1. `PressureBlock`: fixed-axis dense storage with a real layout contract
 
-Source file:
+Code examples:
 
-- `files/compiler/engine/melusine-world-schober/growth/src/Melusine/World/Growth/Solver/PrimordialField/Pressure/Block.hs`
+- `../code-examples/source-corpus-snippets.md#strict-row-value-and-dense-block-owner`
+- `../code-examples/source-corpus-snippets.md#boundary-projection-and-scoped-mutation`
 
 Structural lesson:
 
@@ -29,9 +30,9 @@ Rejects: domain-specific names baked into the reusable storage abstraction.
 
 ## 2. selected-row dirty-copy kernels: incremental work should not sweep the whole block
 
-Source file:
+Code examples:
 
-- `files/compiler/engine/melusine-world-schober/growth/src/Melusine/World/Growth/Solver/PrimordialField/Engine.hs`
+- `../code-examples/source-corpus-snippets.md#selected-row-kernels`
 
 Relevant functions include the dirty-copy paths around `copyPressureAllWithDirty` and `copyPressureFacesWithDirty`.
 
@@ -47,9 +48,9 @@ Rejects: full-block copies for every local update.
 
 ## 3. `Channels`: know when the fixed-axis skill should be rejected
 
-Source file:
+Code example:
 
-- `files/compiler/engine/melusine-world-schober/growth/src/Melusine/World/Growth/Internal/Channels.hs`
+- `../code-examples/source-corpus-snippets.md#rejection-boundary-dynamic-channels-are-not-fixed-axis-blocks`
 
 Structural lesson:
 
@@ -63,11 +64,9 @@ Rejects: pretending a dynamic channel table is a fixed-axis block.
 
 ## 4. solver arenas: mutation becomes acceptable only when ownership is sealed
 
-Source files:
+Code examples:
 
-- `files/compiler/engine/melusine-world-schober/growth/src/Melusine/World/Growth/Solver/PrimordialField/Engine.hs`
-- `files/compiler/engine/melusine-world-schober/growth/src/Melusine/World/Growth/Solver/Solstice/Hydrology/Arena.hs`
-- `files/compiler/engine/melusine-world-schober/growth/src/Melusine/World/Growth/Solver/Solstice/Engine/Types.hs`
+- `../code-examples/source-corpus-snippets.md#solver-arena-sealed-around-dirty-frontiers`
 
 Structural lesson:
 

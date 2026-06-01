@@ -1,6 +1,6 @@
 # Stack Exemplars
 
-These are the broader Melusine/Moonlight stack precedents worth stealing for `fixed-axis-dense-blocks` when the immediate `PressureBlock` example is too local. They matter because they show the ownership ladder above and below the raw block itself.
+These are broader dense-block precedents worth stealing for `fixed-axis-dense-blocks` when the immediate row/block example is too local. The code snippets live in `../code-examples/source-corpus-snippets.md`.
 
 ## Selection rule
 
@@ -13,11 +13,9 @@ Keep an exemplar only if it shows at least one of these moves:
 
 ## 1. `CoupledArena`: modal state and dense block materialization can share one owner
 
-Source files:
+Code examples:
 
-- `files/compiler/engine/melusine-world-schober/growth/src/Melusine/World/Growth/Solver/PrimordialField/Pressure/CoupledStep.hs`
-- `files/compiler/engine/melusine-world-schober/growth/src/Melusine/World/Growth/Solver/PrimordialField/Engine.hs`
-- `files/compiler/engine/melusine-world-schober/growth/test/Melusine/World/Growth/Solver/PrimordialField/ImplicitOwnershipSpec.hs`
+- `../code-examples/source-corpus-snippets.md#modal-arena-with-dense-materialization`
 
 Structural lesson:
 
@@ -45,10 +43,9 @@ Rejects: duplicating modal buffers and dense blocks as semantically independent 
 
 ## 2. `ReliefBlock` and `DenseBlock`: shared kernels belong below the domain block type
 
-Source files:
+Code examples:
 
-- `files/compiler/engine/melusine-world-schober/growth/src/Melusine/World/Growth/Solver/Common/Relief.hs`
-- `files/compiler/engine/melusine-world-schober/growth/src/Melusine/World/Growth/Solver/Common/DenseBlock.hs`
+- `../code-examples/source-corpus-snippets.md#dense-numeric-kernels-factored-below-domain-blocks`
 
 Structural lesson:
 
@@ -75,10 +72,9 @@ Rejects: copying the same residual and max-delta loops into every block module.
 
 ## 3. `HydrologyArena` and `SedimentArena`: dirty-frontier mutation must stay sealed
 
-Source files:
+Code examples:
 
-- `files/compiler/engine/melusine-world-schober/growth/src/Melusine/World/Growth/Solver/Solstice/Hydrology/Arena.hs`
-- `files/compiler/engine/melusine-world-schober/growth/src/Melusine/World/Growth/Solver/Solstice/Sediment/Arena.hs`
+- `../code-examples/source-corpus-snippets.md#solver-arena-sealed-around-dirty-frontiers`
 
 Structural lesson:
 
