@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="HKD indexed data">
+  <rect width="64" height="64" rx="14" fill="#24143d"/>
+  <g fill="none" stroke="#b98cff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M14 18h14v14H14zM36 18h14v14H36zM14 40h14v10H14zM36 40h14v10H36z"/>
+    <path d="M28 25h8M21 32v8M43 32v8M28 45h8"/>
+  </g>
+  <circle cx="32" cy="32" r="4" fill="#7ef7d4"/>
+</svg>

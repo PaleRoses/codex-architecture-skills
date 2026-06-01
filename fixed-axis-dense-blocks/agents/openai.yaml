@@ -1,0 +1,8 @@
+interface:
+  display_name: "Fixed-Axis Dense Blocks"
+  short_description: "Small fixed-width numeric block layout."
+  icon_small: "./assets/fixed-axis-dense-blocks-small.svg"
+  icon_large: "./assets/fixed-axis-dense-blocks.png"
+  default_prompt: "Design a fixed-axis dense block layout for this numeric state."
+policy:
+  allow_implicit_invocation: true

@@ -1,0 +1,8 @@
+interface:
+  display_name: "HKD Indexed Data"
+  short_description: "Higher-kinded record and indexed product design."
+  icon_small: "./assets/hkd-indexed-data-small.svg"
+  icon_large: "./assets/hkd-indexed-data.png"
+  default_prompt: "Use $hkd-indexed-data to design a higher-kinded record or witness-indexed product."
+policy:
+  allow_implicit_invocation: true

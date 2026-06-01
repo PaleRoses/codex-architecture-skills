@@ -1,0 +1,8 @@
+interface:
+  display_name: "Structured Registry Designer"
+  short_description: "Lawful registry structure selection."
+  icon_small: "./assets/structured-registry-designer-small.svg"
+  icon_large: "./assets/structured-registry-designer.png"
+  default_prompt: "Use $structured-registry-designer to classify this registry and design the correct indexed structure."
+policy:
+  allow_implicit_invocation: true
