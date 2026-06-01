@@ -36,7 +36,7 @@ Read `references/anti-patterns.md` when auditing an existing registry.
 
 Use `examples/good-request.md` for the minimal trigger shape.
 Use `examples/public-haskell-exemplars.md` for transferable public precedents.
-Use `examples/source-corpus-exemplars.md` for portable source-shaped exemplars.
+Use `examples/source-corpus-exemplars.md` for the repo-local canonical structures.
 
 ## Output contract
 

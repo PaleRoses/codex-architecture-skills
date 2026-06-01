@@ -37,8 +37,8 @@ Read `references/anti-patterns.md` when reviewing an existing block layout.
 ## Example map
 
 Use `examples/good-request.md` for the minimal trigger shape.
-Use `examples/stack-exemplars.md` for broader portable precedents when the immediate dense-block example is too local.
-Use `examples/source-corpus-exemplars.md` for portable source-shaped exemplars.
+Use `examples/stack-exemplars.md` for stronger repo-native precedents elsewhere in the Melusine/Moonlight stack.
+Use `examples/source-corpus-exemplars.md` for the repo-local canonical structures.
 
 ## Output contract
 

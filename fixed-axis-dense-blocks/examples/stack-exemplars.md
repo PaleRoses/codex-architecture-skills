@@ -1,37 +1,115 @@
-# Transferable dense-block precedents
+# Stack Exemplars
 
-These patterns generalize beyond one solver, model, or numeric domain.
+These are the broader Melusine/Moonlight stack precedents worth stealing for `fixed-axis-dense-blocks` when the immediate `PressureBlock` example is too local. They matter because they show the ownership ladder above and below the raw block itself.
 
-## Solver residual block
+## Selection rule
 
-Use a fixed-axis block when residual, dot product, weighted mix, and max-delta all operate over the same homogeneous row shape.
+Keep an exemplar only if it shows at least one of these moves:
 
-Transfer rule: residual computation, convergence measurement, and update mixing should share one validated layout owner.
+- bridge a modal or compressed solver state back to dense fixed-axis materialization;
+- factor shared dense kernels below multiple concrete block types;
+- seal mutable frontiers and dirty tracking inside arena ownership;
+- keep dense materialization as a derived read model rather than a second authority.
 
-## Arena pair
+## 1. `CoupledArena`: modal state and dense block materialization can share one owner
 
-Use immutable and mutable block pairs:
+Source files:
 
-- immutable input snapshot;
-- scoped mutable workspace;
-- freeze boundary after the hot loop.
+- `files/compiler/engine/melusine-world-schober/growth/src/Melusine/World/Growth/Solver/PrimordialField/Pressure/CoupledStep.hs`
+- `files/compiler/engine/melusine-world-schober/growth/src/Melusine/World/Growth/Solver/PrimordialField/Engine.hs`
+- `files/compiler/engine/melusine-world-schober/growth/test/Melusine/World/Growth/Solver/PrimordialField/ImplicitOwnershipSpec.hs`
 
-Transfer rule: the arena is an interpreter boundary. Do not let mutable storage become public semantics.
+Structural lesson:
 
-## Axis descriptor bridge
+- a fixed-axis dense block is sometimes the public projection of a richer internal solver state;
+- snapshotting, retargeting, dirty-delta computation, and dense materialization all belong to one arena boundary;
+- the dense block becomes a derived view, not a rival mutable owner.
 
-Use a closed axis descriptor list when UI, CSV, debug output, or metrics need names.
+Reusable shape:
 
-Transfer rule: descriptors are projections from the closed axis universe. They must not control storage length at runtime.
+```haskell
+data CoupledArena s = CoupledArena
+  { caPlan      :: !CoupledPlan
+  , caXBufs     :: !(MVector s Float)
+  , caPrevXBufs :: !(MVector s Float)
+  }
 
-## Frontier iteration
+snapshotCoupledArena :: CoupledArena s -> ST s ()
+materializeCoupledArena :: CoupledArena s -> Int -> Vector Int -> ST s Block
+coupledArenaDeltaWithDirty :: CoupledArena s -> Int -> Vector Int -> Float -> (Int -> ST s ()) -> ST s Float
+```
 
-Use selected-row kernels when only a dirty frontier changes.
+Steal when hot solver state lives in a transformed basis but callers still need a dense fixed-axis block at the boundary.
 
-Transfer rule: selected kernels need the same algebraic tests as whole-block kernels plus isolation tests for untouched rows.
+Rejects: duplicating modal buffers and dense blocks as semantically independent mutable owners.
 
-## Dense-to-domain projection
+## 2. `ReliefBlock` and `DenseBlock`: shared kernels belong below the domain block type
 
-Use row projection functions when the rest of the system speaks domain values.
+Source files:
 
-Transfer rule: dense layout is private. Public APIs should expose row values, summaries, or typed projections, not offsets.
+- `files/compiler/engine/melusine-world-schober/growth/src/Melusine/World/Growth/Solver/Common/Relief.hs`
+- `files/compiler/engine/melusine-world-schober/growth/src/Melusine/World/Growth/Solver/Common/DenseBlock.hs`
+
+Structural lesson:
+
+- fixed-axis block design improves when common numeric kernels are factored into a reusable dense core;
+- the scalar one-axis case and the eight-axis case can share residual, dot, mix, and max-delta machinery without sharing semantics;
+- this makes concrete blocks feel like lawful specializations rather than bespoke blobs.
+
+Reusable shape:
+
+```haskell
+data ReliefBlock = ReliefBlock
+  { rbRows :: !Int
+  , rbData :: !(Vector Double)
+  }
+
+blockResidualInto :: Int -> MVector s a -> MVector s a -> MVector s a -> ST s ()
+blockDotM :: Int -> MVector s a -> MVector s a -> ST s a
+blockMixInto :: a -> Int -> MVector s a -> a -> MVector s a -> MVector s a -> ST s ()
+```
+
+Steal when multiple dense block types differ in semantic row shape but share the same kernel algebra.
+
+Rejects: copying the same residual and max-delta loops into every block module.
+
+## 3. `HydrologyArena` and `SedimentArena`: dirty-frontier mutation must stay sealed
+
+Source files:
+
+- `files/compiler/engine/melusine-world-schober/growth/src/Melusine/World/Growth/Solver/Solstice/Hydrology/Arena.hs`
+- `files/compiler/engine/melusine-world-schober/growth/src/Melusine/World/Growth/Solver/Solstice/Sediment/Arena.hs`
+
+Structural lesson:
+
+- once a solver needs dirty faces, active pairs, basin frontiers, or lake carry state, those structures should live inside an arena, not leak into the public block API;
+- mutable support buffers are acceptable when they are ownership-scoped and frozen results remain authoritative;
+- frontier construction is part of the solver boundary, not an afterthought bolted onto a dense block.
+
+Reusable shape:
+
+```haskell
+data Arena s = Arena
+  { current    :: !(MBlock s)
+  , previous   :: !(MBlock s)
+  , dirtySeen  :: !(MVector s Word8)
+  , dirtyBuf   :: !(MVector s Int)
+  , activeSeen :: !(MVector s Word8)
+  , activeBuf  :: !(MVector s Int)
+  }
+```
+
+Steal when fixed-axis blocks participate in iterative frontier solvers with localized work reuse.
+
+Rejects: public immutable block types that secretly require callers to manage dirty buffers and frontier sets themselves.
+
+## Final review questions
+
+A proposed exemplar is strong enough only if it helps answer:
+
+```text
+What is the true owner: raw block, transformed arena, or both in sequence?
+Which kernels are shared beneath concrete block types?
+Where do dirty-frontier and snapshot semantics live?
+Which dense projection is derived rather than co-authoritative?
+```

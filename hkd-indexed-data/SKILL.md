@@ -42,8 +42,8 @@ Read `references/anti-patterns.md` when reviewing an existing implementation.
 ## Example map
 
 Use `examples/good-request.md` for the minimal trigger shape.
-Use `examples/source-corpus-exemplars.md` for portable source-shaped exemplars.
-Use `examples/stack-exemplars.md` for transferable ecosystem patterns.
+Use `examples/source-corpus-exemplars.md` for repo-local canonical structures.
+Use `examples/stack-exemplars.md` for transferable shapes from nearby packages.
 
 ## Output contract
 

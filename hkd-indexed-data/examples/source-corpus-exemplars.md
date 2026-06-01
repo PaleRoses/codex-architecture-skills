@@ -1,59 +1,141 @@
-# Portable source-shaped exemplars
+# Source Corpus Exemplars
 
-Use these as shape reminders when reviewing real code. They are intentionally generic; map names to the local domain before proposing types.
+These are the local structures that matter for `hkd-indexed-data`. They are nearby canonical grip points, not decorative links.
 
-## Carrier-parametric record
+## 1. `ChannelVec`: closed heterogeneous product by witness
 
-```haskell
-data Profile f = Profile
-  { profileName  :: f Text
-  , profileEmail :: f Email
-  , profileAge   :: f Age
-  }
+Source files:
+
+- `files/compiler/engine/melusine-algebra/src/Melusine/Algebra/Pure/ChannelVec.hs`
+- `files/compiler/engine/melusine-algebra/src/Melusine/Algebra/Pure/ChannelDelta.hs`
+
+Structural lesson:
+
+- `CanonicalChannel` is the closed universe;
+- `ChannelWitness channel` recovers the index;
+- `ChannelState channel` and `ChannelDeltaPayload channel` attach heterogeneous payloads;
+- `ChannelVec f` gives total storage over the family;
+- `tabulateChannelVec`, `indexChannelVec`, `traverseChannelVecWithWitness`, and `replaceChannelVec` are the essential surface.
+- `ChannelConstraintBundle constraint` is how per-channel constraints are carried without a stringly side table.
+- `SomeChannelWitness` and `SomeChannelDelta` are acceptable existential shells because the typed witness is still recoverable.
+
+Transfer rule: use this when a closed family has different payload types per member but still needs total product operations.
+
+Rejects: `Map ChannelId SomePayload` as canonical semantics.
+
+Review grip:
+
+```text
+Can every channel be indexed without failure?
+Does every existential value still carry the channel witness?
+Does adding a channel force ChannelState, ChannelDeltaPayload, tabulation, indexing, registry, and tests to move together?
 ```
 
-Good when the same logical fields need raw, optional, validated, diagnostic, encoded, or projected views.
+## 2. `CoveringProduct`: abstract dependent product over witnesses
 
-Transfer rule: one field universe owns all views. `Profile Maybe`, `Profile Identity`, and `Profile (Validation FieldError)` are derived sections, not competing schemas.
+Source file:
 
-## Witness-indexed product
+- `files/compiler/foundation/moonlight-category/src-core/Moonlight/Category/Pure/CoveringProduct.hs`
 
-```haskell
-data Field a where
-  NameField  :: Field Text
-  EmailField :: Field Email
-  AgeField   :: Field Age
+Structural lesson:
 
-type family FieldPayload a
+- `CoveringProduct w f` is the generic form of a total witness-indexed product;
+- `tabulateCoveringProduct` and `indexCoveringProduct` are the law-bearing core;
+- `restrictCoveringProduct` handles typed subset projection without a runtime key filter;
+- targeted replacement requires typed witness equality;
+- `foldMapCoveringProductWithWitness` depends on `CoveringFamily w`, so iteration is derived from the witness universe, not hand-maintained map keys.
+
+Transfer rule: use this when the product pattern should be abstract over the witness universe.
+
+Rejects: rebuilding a separate product type for every subset projection.
+
+Review grip:
+
+```text
+Is the product just a function from witness to payload?
+Is subset projection a typed witness embedding?
+Is replacement guarded by witness equality rather than by text labels?
 ```
 
-Good when each index carries a different payload type and callers need witness-preserving `index`, `tabulate`, `traverseWithWitness`, and `replace`.
+## 3. `Column f a`: HKD record view selection
 
-Transfer rule: existential hiding is acceptable only when the witness travels with the hidden payload.
+Source files:
 
-## Phase-indexed view
+- `files/compiler/foundation/moonlight-flow/model/src/Moonlight/Flow/Model/Family.hs`
+- `files/compiler/foundation/moonlight-flow/test-support/test/Moonlight/Flow/Runtime/PublicApiSpec.hs`
 
-```haskell
-data Phase = Raw | Checked | Compiled
+Structural lesson:
 
-type family Cell (phase :: Phase) a where
-  Cell Raw      a = Maybe a
-  Cell Checked  a = Either FieldError a
-  Cell Compiled a = a
+- `Column f a` lets one record schema describe several representations;
+- `Column Identity a` is the canonical scalar value;
+- `Column VU.Vector a` is the columnar/vectorized representation;
+- `Column (Const x) a` is the metadata/header representation;
+- `Member Identity` is the canonical row value in the test support;
+- `SAtomFamily fam` decodes runtime rows into `fam Identity` through one schema owner;
+- row-width mismatch is a typed decode error, not a failed pattern match pretending to be impossible.
+
+Transfer rule: use this when raw, canonical, encoded, columnar, or diagnostic views share the same named fields.
+
+Rejects: manually synchronized row/header/value records.
+
+Review grip:
+
+```text
+Which single record owns the fields?
+What does each carrier mean operationally?
+Where does decoding cross from runtime row into fam Identity?
+Which errors are named at the decode boundary?
 ```
 
-Good when the same schema crosses authoring, validation, and execution phases.
+## 4. Typed modality registries: dependent keys are the adjacent boundary
 
-Transfer rule: phase transitions are constructors with typed failures, not ad hoc record conversions.
+Source files:
 
-## Sparse-to-total authoring
+- `files/compiler/foundation/moonlight-sheaf/obstruction/src/Moonlight/Sheaf/Obstruction/Cohomological/Modality.hs`
+- `files/compiler/foundation/moonlight-sheaf/obstruction/src/Moonlight/Sheaf/Obstruction/Cohomological/Substrate.hs`
 
-Use a sparse fragment only at the boundary:
+Structural lesson:
 
-```haskell
-data FieldPatch = forall a. FieldPatch (Field a) a
+- `ModalityRegistry key` uses dependent keys to carry the payload type selected by each key;
+- lowering to relation/projection form is a derived view;
+- gaps and unsupported anchors are typed failures, not missing map entries.
+- `DMap`/dependent sums are appropriate only when the key preserves enough type evidence to safely recover the value.
+
+Transfer rule: use typed keys and dependent maps when the universe is registry-shaped rather than total-product-shaped, but the value family still must remain type-indexed.
+
+Rejects: untyped capability dictionaries.
+
+Review grip:
+
+```text
+Does the key select the value type?
+Is lowering/projection downstream of the typed owner?
+Are missing references and unsupported anchors returned as typed gaps?
 ```
 
-Then resolve into the canonical total product once.
+## 5. Cohomological substrate aliases: phase-specific views should stay derived
 
-Transfer rule: patches and partial forms are ingestion views. The total product is the authority after construction.
+Source file:
+
+- `files/compiler/foundation/moonlight-sheaf/obstruction/src/Moonlight/Sheaf/Obstruction/Cohomological/Substrate.hs`
+
+Structural lesson:
+
+- aliases such as `SubstrateRegion`, `SubstrateExactMatch`, `SubstrateWitness`, and `SubstrateRegionSummary` fix a substrate-indexed family into concrete execution views;
+- `CohomologicalSupportAlgebra request key region evidence result ref gap tag` keeps the request/key/region/evidence/result/gap/tag families explicit instead of collapsing them into an untyped environment;
+- support, exact-match, witness, cache, and projection views are downstream of the substrate family.
+
+Transfer rule: use family-indexed aliases when many phase-specific views are all consequences of one substrate parameter.
+
+Rejects: copying the same record for every phase because the payload type changed.
+
+## Final review questions
+
+```text
+What owns the product shape?
+Is the universe closed enough for total indexing?
+Which carrier or witness recovers each payload type?
+Which views are derived rather than authoritative?
+Which operation proves the product is total?
+Which test fails when the product gains a new member?
+```

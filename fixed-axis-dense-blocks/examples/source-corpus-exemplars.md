@@ -1,61 +1,101 @@
-# Portable source-shaped exemplars
+# Source Corpus Exemplars
 
-Use these as dense-block transfer patterns for real code.
+These are the local structures that matter for `fixed-axis-dense-blocks`. They are the nearby canonical target shapes in this repository.
 
-## Four-axis field block
+## 1. `PressureBlock`: fixed-axis dense storage with a real layout contract
+
+Source file:
+
+- `files/compiler/engine/melusine-world-schober/growth/src/Melusine/World/Growth/Solver/PrimordialField/Pressure/Block.hs`
+
+Structural lesson:
+
+- the reusable pattern is not “pressure”; it is a strict fixed-width row plus dense block storage;
+- layout is chosen once and then fed to real kernels;
+- public row semantics and internal storage order are distinct layers.
+
+Reusable shape:
 
 ```haskell
-data Field4 = Field4
-  { fieldHeat  :: !Double
-  , fieldWater :: !Double
-  , fieldWind  :: !Double
-  , fieldMineral :: !Double
+data Row8 = Row8 !Float !Float !Float !Float !Float !Float !Float !Float
+
+blockIx :: Int -> Int -> Int -> Int
+blockIx rows axis row = axis * rows + row
+```
+
+Transfer rule: use this when a small fixed homogeneous axis family dominates hot numeric work.
+
+Rejects: domain-specific names baked into the reusable storage abstraction.
+
+## 2. selected-row dirty-copy kernels: incremental work should not sweep the whole block
+
+Source file:
+
+- `files/compiler/engine/melusine-world-schober/growth/src/Melusine/World/Growth/Solver/PrimordialField/Engine.hs`
+
+Relevant functions include the dirty-copy paths around `copyPressureAllWithDirty` and `copyPressureFacesWithDirty`.
+
+Structural lesson:
+
+- dense block quality includes update schedule quality;
+- selected-row kernels are first-class when dirty-frontier iteration matters;
+- convergence measurement can share the copy boundary instead of forcing a second pass.
+
+Transfer rule: add selected-row operations when solver work is sparse in space but dense in per-row math.
+
+Rejects: full-block copies for every local update.
+
+## 3. `Channels`: know when the fixed-axis skill should be rejected
+
+Source file:
+
+- `files/compiler/engine/melusine-world-schober/growth/src/Melusine/World/Growth/Internal/Channels.hs`
+
+Structural lesson:
+
+- dynamic row or column counts belong in a generic dense matrix structure;
+- not every dense numeric layout should be squeezed into a fixed-width row product;
+- the rejection boundary is part of the skill quality bar.
+
+Transfer rule: if the axis family is open or runtime-variable, stop and use the generic channel matrix instead.
+
+Rejects: pretending a dynamic channel table is a fixed-axis block.
+
+## 4. solver arenas: mutation becomes acceptable only when ownership is sealed
+
+Source files:
+
+- `files/compiler/engine/melusine-world-schober/growth/src/Melusine/World/Growth/Solver/PrimordialField/Engine.hs`
+- `files/compiler/engine/melusine-world-schober/growth/src/Melusine/World/Growth/Solver/Solstice/Hydrology/Arena.hs`
+- `files/compiler/engine/melusine-world-schober/growth/src/Melusine/World/Growth/Solver/Solstice/Engine/Types.hs`
+
+Structural lesson:
+
+- mutable arenas are acceptable when they are strictly scoped and the frozen public result is the only exported owner;
+- scratch buffers, dirty sets, and work fronts belong with the arena, not with the public row API.
+
+Reusable shape:
+
+```haskell
+data Arena s = Arena
+  { current  :: !(MBlock axis s)
+  , next     :: !(MBlock axis s)
+  , residual :: !(MBlock axis s)
+  , dirty    :: !(MVector s Int)
   }
-
-newtype FieldBlock = FieldBlock Vector
 ```
 
-Shape: strict public row value plus contiguous storage for many rows.
+Transfer rule: pair dense blocks with arena ownership when iterative solvers need repeated in-place kernels.
 
-Transfer rule: `Field4` is not the block. It is the public row projection. The block owns layout and row count.
+Rejects: mutable state leaking through the public immutable boundary.
 
-## Scoped mutable arena
+## Final review questions
 
-```haskell
-newtype MutableFieldBlock s = MutableFieldBlock (MutableVector s Double)
+Use the local corpus correctly only if you can answer:
+
+```text
+Which module owns the canonical layout formula?
+Where are selected-row kernels explicit rather than improvised?
+Where does the generic dynamic matrix take over from the fixed-axis block?
+Which mutable structures are sealed inside an arena boundary?
 ```
-
-Shape: mutable hot-loop storage whose scope parameter prevents escape.
-
-Transfer rule: mutation is an interpreter detail. Public state freezes back into immutable blocks or row values.
-
-## Selected-row kernel
-
-```haskell
-maxAbsDeltaSelected :: RowSet -> FieldBlock -> FieldBlock -> Double
-```
-
-Shape: frontier-aware numeric kernel that touches only chosen rows.
-
-Transfer rule: selected-row operations must prove isolation. Tests should fail if an unselected row changes or contributes.
-
-## Canonical layout formula
-
-```haskell
-index axis row = axis * rowCount + row
-```
-
-Shape: column-major layout for axis-wise sweeps.
-
-Transfer rule: choose one layout formula and make every read, write, copy, and kernel share it. A layout switch is a migration, not a runtime flag.
-
-## Boundary projection
-
-```haskell
-readRow :: FieldBlock -> RowId -> Field4
-writeRow :: MutableFieldBlock s -> RowId -> Field4 -> ST s ()
-```
-
-Shape: dense internal representation with domain-shaped public values.
-
-Transfer rule: callers consume domain rows, not storage offsets.
