@@ -2,8 +2,6 @@
 
 Three portable Agent Skill packages for typed functional architecture work.
 
-This repository is intentionally small. Each top-level skill folder is installable on its own and carries its own `SKILL.md`, references, examples, UI metadata, and code snippets. There is no shared runtime source tree hiding behind the skills.
-
 ## Skills
 
 | Skill | Use when |
@@ -33,8 +31,6 @@ python3 ~/.codex/skills/.system/skill-creator/scripts/quick_validate.py ./hkd-in
 python3 ~/.codex/skills/.system/skill-creator/scripts/quick_validate.py ./structured-registry-designer
 python3 ~/.codex/skills/.system/skill-creator/scripts/quick_validate.py ./fixed-axis-dense-blocks
 ```
-
-The eval corpus in [`evals/trigger-cases.jsonl`](./evals/trigger-cases.jsonl) gives realistic prompts, expected skill selection, and quality expectations for manual or harness-driven testing.
 
 ## License
 
